@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +9,8 @@ namespace RPG
         private readonly Dictionary<Direction, SpriteAnimation> _animations;
 
         private Direction _direction;
-        private bool _isRunning = false;
 
-        public bool IsRunning { get => _isRunning; set => _isRunning = value; }
+        public bool IsRunning { get; set; } = false;
 
         public PlayerAnimations(
             SpriteAnimation walkDown,
@@ -42,7 +40,7 @@ namespace RPG
                 position.Y - ActiveAnimation.Height / 2
             );
 
-            if (_isRunning) ActiveAnimation.Update(gameTime);
+            if (IsRunning) ActiveAnimation.Update(gameTime);
             else ActiveAnimation.Stop();
         }
 

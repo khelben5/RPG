@@ -1,4 +1,3 @@
-using System;
 using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

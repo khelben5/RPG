@@ -1,7 +1,10 @@
-enum Direction
+namespace RPG
 {
-    Down,
-    Up,
-    Right,
-    Left
+    enum Direction
+    {
+        Down,
+        Up,
+        Right,
+        Left
+    }
 }

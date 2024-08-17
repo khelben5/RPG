@@ -5,67 +5,78 @@ namespace RPG
 {
     public class SpriteManager
     {
-        protected Texture2D Texture;
-        public Vector2 Position = Vector2.Zero;
-        public Color Color = Color.White;
-        public Vector2 Origin;
-        public float Rotation = 0f;
-        public float Scale = 1f;
-        public SpriteEffects SpriteEffect;
-        protected Rectangle[] Rectangles;
-        protected int FrameIndex = 0;
+        protected Rectangle[] _rectangles;
+        protected int _frameIndex = 0;
 
-        public SpriteManager(Texture2D Texture, int frames)
+        private readonly Texture2D _texture;
+        private readonly float _rotation = 0f;
+        private readonly float _scale = 1f;
+
+        private Vector2 _position = Vector2.Zero;
+
+        public Vector2 Position { get => _position; set => _position = value; }
+
+        public SpriteManager(Texture2D texture, int frames)
         {
-            this.Texture = Texture;
-            int width = Texture.Width / frames;
-            Rectangles = new Rectangle[frames];
+            _texture = texture;
+            int width = texture.Width / frames;
+            _rectangles = new Rectangle[frames];
 
             for (int i = 0; i < frames; i++)
-                Rectangles[i] = new Rectangle(i * width, 0, width, Texture.Height);
+                _rectangles[i] = new Rectangle(i * width, 0, width, texture.Height);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, Rectangles[FrameIndex], Color, Rotation, Origin, Scale, SpriteEffect, 0f);
+            spriteBatch.Draw(
+                _texture,
+                _position,
+                _rectangles[_frameIndex],
+                Color.White,
+                _rotation,
+                new(),
+                _scale,
+                new(),
+                0f
+            );
         }
 
-        public float Width => Rectangles[0].Width;
-        public float Height => Rectangles[0].Height;
+        public float Width => _rectangles[0].Width;
+        public float Height => _rectangles[0].Height;
     }
 
     public class SpriteAnimation : SpriteManager
     {
         private const int _stopFrameIndex = 1;
 
-        private float timeElapsed;
-        public bool IsLooping = true;
-        private float timeToUpdate; //default, you may have to change it
-        public int FramesPerSecond { set { timeToUpdate = (1f / value); } }
+        private readonly bool _isLooping = true;
+        private readonly float _timeToUpdate;
+
+        private float _elapsedTime;
 
         public SpriteAnimation(Texture2D Texture, int frames, int fps) : base(Texture, frames)
         {
-            FramesPerSecond = fps;
+            _timeToUpdate = 1f / fps;
         }
 
         public void Update(GameTime gameTime)
         {
-            timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (timeElapsed > timeToUpdate)
+            _elapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_elapsedTime > _timeToUpdate)
             {
-                timeElapsed -= timeToUpdate;
+                _elapsedTime -= _timeToUpdate;
 
-                if (FrameIndex < Rectangles.Length - 1)
-                    FrameIndex++;
+                if (_frameIndex < _rectangles.Length - 1)
+                    _frameIndex++;
 
-                else if (IsLooping)
-                    FrameIndex = 0;
+                else if (_isLooping)
+                    _frameIndex = 0;
             }
         }
 
         public void Stop()
         {
-            FrameIndex = _stopFrameIndex;
+            _frameIndex = _stopFrameIndex;
         }
     }
 }
