@@ -9,6 +9,7 @@ public class RPGGame : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameSprites _sprites;
+    private State _state = new();
 
     public RPGGame()
     {
@@ -31,11 +32,8 @@ public class RPGGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-        // TODO: Add your update logic here
-
+        ExitIfRequired();
+        _state.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -43,6 +41,7 @@ public class RPGGame : Game
     {
         _spriteBatch.Begin();
         DrawBackground();
+        DrawPlayer();
         _spriteBatch.End();
         base.Draw(gameTime);
     }
@@ -74,8 +73,19 @@ public class RPGGame : Game
         walkLeft: Content.Load<Texture2D>("Player/walkLeft")
     );
 
+    private void ExitIfRequired()
+    {
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
+    }
+
     private void DrawBackground()
     {
         _spriteBatch.Draw(_sprites.Background, new Vector2(-500, -500), Color.White);
+    }
+
+    private void DrawPlayer()
+    {
+        _spriteBatch.Draw(_sprites.Player.Player, _state.GetPlayerPosition(), Color.White);
     }
 }
