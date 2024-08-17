@@ -1,4 +1,5 @@
-﻿using Comora;
+﻿using System;
+using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,53 +11,42 @@ public class RPGGame : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameSprites _sprites;
-    private State _state = new();
-    private Camera _camera;
+    private State _state;
 
     public RPGGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
-        IsMouseVisible = true;
     }
 
     protected override void Initialize()
     {
         SetUpCanvasSize();
-        InitCamera();
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        LoadSprites();
+        _sprites = CreateGameSprites();
+        _state = new(
+            camera: new(_graphics.GraphicsDevice),
+            player: new(LoadPlayerAnimations())
+        );
     }
 
     protected override void Update(GameTime gameTime)
     {
         ExitIfRequired();
-        UpdateState(gameTime);
-        UpdateCamera(gameTime);
-        base.Update(gameTime);
-    }
-
-    private void UpdateState(GameTime gameTime)
-    {
         _state.Update(gameTime);
-    }
-
-    private void UpdateCamera(GameTime gameTime)
-    {
-        _camera.Position = _state.GetPlayerPosition();
-        _camera.Update(gameTime);
+        base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        _spriteBatch.Begin(_camera);
-        DrawBackground();
-        DrawPlayer();
+        _spriteBatch.Begin(_state.Camera);
+        _spriteBatch.Draw(_sprites.Background, new Vector2(-500, -500), Color.White);
+        _state.Draw(_spriteBatch);
         _spriteBatch.End();
         base.Draw(gameTime);
     }
@@ -66,16 +56,6 @@ public class RPGGame : Game
         _graphics.PreferredBackBufferWidth = 1280;
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
-    }
-
-    private void InitCamera()
-    {
-        _camera = new(_graphics.GraphicsDevice);
-    }
-
-    private void LoadSprites()
-    {
-        _sprites = CreateGameSprites();
     }
 
     private GameSprites CreateGameSprites() => new(
@@ -93,19 +73,22 @@ public class RPGGame : Game
         walkLeft: Content.Load<Texture2D>("Player/walkLeft")
     );
 
+    private PlayerAnimations LoadPlayerAnimations() => new(
+        walkDown: LoadAnimation("Player/walkDown"),
+        walkUp: LoadAnimation("Player/walkUp"),
+        walkRight: LoadAnimation("Player/walkRight"),
+        walkLeft: LoadAnimation("Player/walkLeft")
+    );
+
+    private SpriteAnimation LoadAnimation(
+        string assetName,
+        int numberOfFrames = 4,
+        int framesPerSecond = 8
+    ) => new(Content.Load<Texture2D>(assetName), numberOfFrames, framesPerSecond);
+
     private void ExitIfRequired()
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
-    }
-
-    private void DrawBackground()
-    {
-        _spriteBatch.Draw(_sprites.Background, new Vector2(-500, -500), Color.White);
-    }
-
-    private void DrawPlayer()
-    {
-        _spriteBatch.Draw(_sprites.Player.Player, _state.GetPlayerPosition(), Color.White);
     }
 }
