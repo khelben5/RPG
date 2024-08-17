@@ -5,6 +5,8 @@ namespace RPG
 {
     public class SpriteManager
     {
+        protected const int _stopFrameIndex = 1;
+
         protected Rectangle[] _rectangles;
         protected int _frameIndex = 0;
 
@@ -12,9 +14,8 @@ namespace RPG
         private readonly float _rotation = 0f;
         private readonly float _scale = 1f;
 
-        private Vector2 _position = Vector2.Zero;
-
-        public Vector2 Position { get => _position; set => _position = value; }
+        public Vector2 Position { get; set; }
+        public Vector2 Size => _rectangles[_stopFrameIndex].Size.ToVector2();
 
         public SpriteManager(Texture2D texture, int frames)
         {
@@ -30,7 +31,7 @@ namespace RPG
         {
             spriteBatch.Draw(
                 _texture,
-                _position,
+                Position,
                 _rectangles[_frameIndex],
                 Color.White,
                 _rotation,
@@ -40,15 +41,10 @@ namespace RPG
                 0f
             );
         }
-
-        public float Width => _rectangles[0].Width;
-        public float Height => _rectangles[0].Height;
     }
 
     public class SpriteAnimation : SpriteManager
     {
-        private const int _stopFrameIndex = 1;
-
         private readonly bool _isLooping = true;
         private readonly float _timeToUpdate;
 

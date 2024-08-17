@@ -5,14 +5,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RPG;
 
-public class RPGGame : Game
+public class RpgGame : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameSprites _sprites;
     private State _state;
 
-    public RPGGame()
+    public RpgGame()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -30,7 +30,8 @@ public class RPGGame : Game
         _sprites = CreateGameSprites();
         _state = new(
             camera: new(_graphics.GraphicsDevice),
-            player: new(LoadPlayerAnimations())
+            player: new(LoadDirectedAnimation()),
+            projectileSprite: _sprites.Ball
         );
     }
 
@@ -72,11 +73,11 @@ public class RPGGame : Game
         walkLeft: Content.Load<Texture2D>("Player/walkLeft")
     );
 
-    private PlayerAnimations LoadPlayerAnimations() => new(
-        walkDown: LoadAnimation("Player/walkDown"),
-        walkUp: LoadAnimation("Player/walkUp"),
-        walkRight: LoadAnimation("Player/walkRight"),
-        walkLeft: LoadAnimation("Player/walkLeft")
+    private MovingAnimation LoadDirectedAnimation() => new(
+        moveDown: LoadAnimation("Player/walkDown"),
+        moveUp: LoadAnimation("Player/walkUp"),
+        moveRight: LoadAnimation("Player/walkRight"),
+        moveLeft: LoadAnimation("Player/walkLeft")
     );
 
     private SpriteAnimation LoadAnimation(
