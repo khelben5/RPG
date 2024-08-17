@@ -1,2 +1,2 @@
-﻿using var game = new RPG.Game1();
+﻿using var game = new RPG.RPGGame();
 game.Run();
