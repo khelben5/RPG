@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,7 +12,6 @@ namespace RPG
         private readonly PlayerAnimations _animations;
 
         private Vector2 _position = new(500, 300);
-        private Direction _direction = Direction.Down;
 
         public Vector2 Position { get => _position; }
 
@@ -25,9 +25,10 @@ namespace RPG
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (IsKeyDown(Keys.Right)) MoveRight(deltaTime);
-            if (IsKeyDown(Keys.Left)) MoveLeft(deltaTime);
-            if (IsKeyDown(Keys.Down)) MoveDown(deltaTime);
-            if (IsKeyDown(Keys.Up)) MoveUp(deltaTime);
+            else if (IsKeyDown(Keys.Left)) MoveLeft(deltaTime);
+            else if (IsKeyDown(Keys.Down)) MoveDown(deltaTime);
+            else if (IsKeyDown(Keys.Up)) MoveUp(deltaTime);
+            else Stop();
 
             _animations.Update(gameTime, _position);
         }
@@ -41,26 +42,35 @@ namespace RPG
 
         private void MoveRight(float deltaTime)
         {
-            _direction = Direction.Right;
+            _animations.SetDirection(Direction.Right);
             _position.X += _speed * deltaTime;
+            _animations.IsRunning = true;
         }
 
         private void MoveLeft(float deltaTime)
         {
-            _direction = Direction.Left;
+            _animations.SetDirection(Direction.Left);
             _position.X -= _speed * deltaTime;
+            _animations.IsRunning = true;
         }
 
         private void MoveDown(float deltaTime)
         {
-            _direction = Direction.Down;
+            _animations.SetDirection(Direction.Down);
             _position.Y += _speed * deltaTime;
+            _animations.IsRunning = true;
         }
 
         private void MoveUp(float deltaTime)
         {
-            _direction = Direction.Up;
+            _animations.SetDirection(Direction.Up);
             _position.Y -= _speed * deltaTime;
+            _animations.IsRunning = true;
+        }
+
+        private void Stop()
+        {
+            _animations.IsRunning = false;
         }
     }
 }

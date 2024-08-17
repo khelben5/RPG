@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -5,10 +7,12 @@ namespace RPG
 {
     class PlayerAnimations
     {
-        private readonly SpriteAnimation _walkDown;
-        private readonly SpriteAnimation _walkUp;
-        private readonly SpriteAnimation _walkRight;
-        private readonly SpriteAnimation _walkLeft;
+        private readonly Dictionary<Direction, SpriteAnimation> _animations;
+
+        private Direction _direction;
+        private bool _isRunning = false;
+
+        public bool IsRunning { get => _isRunning; set => _isRunning = value; }
 
         public PlayerAnimations(
             SpriteAnimation walkDown,
@@ -17,30 +21,36 @@ namespace RPG
             SpriteAnimation walkLeft
         )
         {
-            _walkDown = walkDown;
-            _walkUp = walkUp;
-            _walkRight = walkRight;
-            _walkLeft = walkLeft;
+            _animations = new()
+            {
+                { Direction.Down, walkDown },
+                { Direction.Up, walkUp },
+                { Direction.Right, walkRight },
+                { Direction.Left, walkLeft }
+            };
+        }
+
+        public void SetDirection(Direction direction)
+        {
+            _direction = direction;
         }
 
         public void Update(GameTime gameTime, Vector2 position)
         {
-            _walkDown.Position = new(
-                position.X - _walkDown.Width / 2,
-                position.Y - _walkDown.Height / 2
+            ActiveAnimation.Position = new(
+                position.X - ActiveAnimation.Width / 2,
+                position.Y - ActiveAnimation.Height / 2
             );
-            _walkDown.Update(gameTime);
-            // _walkUp.Update(gameTime);
-            // _walkRight.Update(gameTime);
-            // _walkLeft.Update(gameTime);
+
+            if (_isRunning) ActiveAnimation.Update(gameTime);
+            else ActiveAnimation.Stop();
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _walkDown.Draw(spriteBatch);
-            // _walkUp.Draw(spriteBatch);
-            // _walkRight.Draw(spriteBatch);
-            // _walkLeft.Draw(spriteBatch);
+            ActiveAnimation.Draw(spriteBatch);
         }
+
+        private SpriteAnimation ActiveAnimation { get => _animations[_direction]; }
     }
 }

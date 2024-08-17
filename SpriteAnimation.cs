@@ -36,6 +36,8 @@ namespace RPG
 
     public class SpriteAnimation : SpriteManager
     {
+        private const int _stopFrameIndex = 1;
+
         private float timeElapsed;
         public bool IsLooping = true;
         private float timeToUpdate; //default, you may have to change it
@@ -61,9 +63,9 @@ namespace RPG
             }
         }
 
-        public void setFrame(int frame)
+        public void Stop()
         {
-            FrameIndex = frame;
+            FrameIndex = _stopFrameIndex;
         }
     }
 }
