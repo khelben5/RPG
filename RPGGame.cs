@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Comora;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,6 +11,7 @@ public class RPGGame : Game
     private SpriteBatch _spriteBatch;
     private GameSprites _sprites;
     private State _state = new();
+    private Camera _camera;
 
     public RPGGame()
     {
@@ -21,6 +23,7 @@ public class RPGGame : Game
     protected override void Initialize()
     {
         SetUpCanvasSize();
+        InitCamera();
         base.Initialize();
     }
 
@@ -33,13 +36,25 @@ public class RPGGame : Game
     protected override void Update(GameTime gameTime)
     {
         ExitIfRequired();
-        _state.Update(gameTime);
+        UpdateState(gameTime);
+        UpdateCamera(gameTime);
         base.Update(gameTime);
+    }
+
+    private void UpdateState(GameTime gameTime)
+    {
+        _state.Update(gameTime);
+    }
+
+    private void UpdateCamera(GameTime gameTime)
+    {
+        _camera.Position = _state.GetPlayerPosition();
+        _camera.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(_camera);
         DrawBackground();
         DrawPlayer();
         _spriteBatch.End();
@@ -51,6 +66,11 @@ public class RPGGame : Game
         _graphics.PreferredBackBufferWidth = 1280;
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.ApplyChanges();
+    }
+
+    private void InitCamera()
+    {
+        _camera = new(_graphics.GraphicsDevice);
     }
 
     private void LoadSprites()
