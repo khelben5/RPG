@@ -5,22 +5,38 @@ namespace RPG
 {
     class CollisionDetector
     {
-        public static List<Collision> DetectCollisions(
+        public static CollisionsResult DetectCollisions(
             List<Enemy> enemies,
-            List<Projectile> projectiles
+            List<Projectile> projectiles,
+            Player player
         )
         {
             List<Collision> collisions = new();
-            foreach (Projectile projectile in projectiles)
+
+            foreach (Enemy enemy in enemies)
             {
-                foreach (Enemy enemy in enemies)
+                float distanceToPlayer = Vector2.Distance(player.Position, enemy.Position);
+                if (distanceToPlayer < enemy.Radius + player.Radius)
                 {
+                    return new(
+                        collidedWithPlayer: true,
+                        collisions: new()
+                    );
+                }
+
+                foreach (Projectile projectile in projectiles)
+                {
+
                     float distance = Vector2.Distance(projectile.Position, enemy.Position);
                     if (distance < projectile.Radius + enemy.Radius)
                         collisions.Add(new(enemy, projectile));
                 }
             }
-            return collisions;
+
+            return new(
+                collidedWithPlayer: false,
+                collisions: collisions
+            );
         }
 
         private CollisionDetector() { }

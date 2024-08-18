@@ -50,7 +50,10 @@ namespace RPG
 
         private void DetectCollisions()
         {
-            foreach (Collision collision in _enemyController.DetectCollisions(_projectiles))
+            CollisionsResult result = _enemyController.DetectCollisions(_projectiles, _player);
+            if (result.collidedWithPlayer) _player.IsDead = true;
+
+            foreach (Collision collision in result.collisions)
             {
                 _enemyController.KillEnemy(collision.enemy);
                 _projectiles.Remove(collision.projectile);
@@ -87,7 +90,7 @@ namespace RPG
 
         private void UpdateEnemies(GameTime gameTime)
         {
-            _enemyController.SetPlayerPosition(_player.Position);
+            _enemyController.UpdatePlayer(_player);
             _enemyController.Update(gameTime);
         }
 

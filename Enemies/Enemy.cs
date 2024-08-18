@@ -8,6 +8,7 @@ namespace RPG
         private readonly int _speed = 150;
         private readonly TargetMovement _movement;
         private readonly Animation _animation;
+        private bool _isMoving = true;
 
         public Vector2 Position => _movement.Position;
         public float Radius => _animation.Size.X / 2;
@@ -24,7 +25,7 @@ namespace RPG
 
         public void Update(GameTime gameTime)
         {
-            _movement.Update(gameTime);
+            if (_isMoving) _movement.Update(gameTime);
             _animation.Position = _movement.Position;
             _animation.Update(gameTime);
         }
@@ -37,6 +38,11 @@ namespace RPG
         public void SetTargetPosition(Vector2 targetPosition)
         {
             _movement.SetTargetPosition(targetPosition);
+        }
+
+        public void Stop()
+        {
+            _isMoving = false;
         }
     }
 }

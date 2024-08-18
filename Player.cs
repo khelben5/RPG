@@ -15,6 +15,8 @@ namespace RPG
 
         public Vector2 Position => _movement.Position;
         public Direction Direction => _movement.Direction;
+        public bool IsDead { get; set; }
+        public float Radius => _animation.Size.X / 2;
 
         public Player(Animation animation)
         {
@@ -30,6 +32,8 @@ namespace RPG
 
         public void Update(GameTime gameTime)
         {
+            if (IsDead) return;
+
             Direction? direction = DetectDirection(Keyboard.GetState());
             if (direction == null)
             {
@@ -53,6 +57,7 @@ namespace RPG
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (IsDead) return;
             _animation.Draw(spriteBatch);
         }
 

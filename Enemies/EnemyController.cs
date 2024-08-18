@@ -12,7 +12,7 @@ namespace RPG
 
         private double _maxTimer = 2;
         private double _timer;
-        private Vector2 _playerPosition;
+        private Player _player;
 
         public List<Enemy> Enemies => _enemies;
 
@@ -29,7 +29,7 @@ namespace RPG
 
         public void Update(GameTime gameTime)
         {
-            GenerateNewEnemies(gameTime);
+            if (!_player.IsDead) GenerateNewEnemies(gameTime);
             UpdateEnemies(gameTime);
         }
 
@@ -41,9 +41,9 @@ namespace RPG
             }
         }
 
-        public void SetPlayerPosition(Vector2 position)
+        public void UpdatePlayer(Player player)
         {
-            _playerPosition = position;
+            _player = player;
         }
 
         public void KillEnemy(Enemy enemy)
@@ -51,8 +51,10 @@ namespace RPG
             _enemies.Remove(enemy);
         }
 
-        public List<Collision> DetectCollisions(List<Projectile> projectiles) =>
-            CollisionDetector.DetectCollisions(_enemies, projectiles);
+        public CollisionsResult DetectCollisions(
+            List<Projectile> projectiles,
+            Player player
+        ) => CollisionDetector.DetectCollisions(_enemies, projectiles, player);
 
         private void GenerateNewEnemies(GameTime gameTime)
         {
@@ -61,7 +63,7 @@ namespace RPG
             {
                 _enemies.Add(_factory.create(
                     _positionGenerator.Generate(),
-                    _playerPosition
+                    _player.Position
                 ));
                 _timer = _maxTimer;
 
@@ -73,7 +75,8 @@ namespace RPG
         {
             foreach (Enemy enemy in _enemies)
             {
-                enemy.SetTargetPosition(_playerPosition);
+                enemy.SetTargetPosition(_player.Position);
+                if (_player.IsDead) enemy.Stop();
                 enemy.Update(gameTime);
             }
         }
