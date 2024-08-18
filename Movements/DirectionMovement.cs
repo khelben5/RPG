@@ -6,18 +6,21 @@ namespace RPG
     {
         private readonly int _speed;
         private Vector2 _position;
+        private Rectangle? _boundaries;
 
         public Vector2 Position => _position;
         public Direction Direction { get; set; }
 
         public DirectionMovement(
             int speed,
-            Vector2 position,
-            Direction initialDirection = Direction.Down
+            Vector2 initialPosition,
+            Direction initialDirection = Direction.Down,
+            Rectangle? boundaries = null
         )
         {
             _speed = speed;
-            _position = position;
+            _position = initialPosition;
+            _boundaries = boundaries;
             Direction = initialDirection;
         }
 
@@ -41,9 +44,30 @@ namespace RPG
             }
         }
 
-        private void MoveRight(float deltaTime) { _position.X += _speed * deltaTime; }
-        private void MoveLeft(float deltaTime) { _position.X -= _speed * deltaTime; }
-        private void MoveDown(float deltaTime) { _position.Y += _speed * deltaTime; }
-        private void MoveUp(float deltaTime) { _position.Y -= _speed * deltaTime; }
+        private void MoveRight(float deltaTime)
+        {
+            UpdatePositionIfInsideBoundaries(new(_position.X + _speed * deltaTime, _position.Y));
+        }
+
+        private void MoveLeft(float deltaTime)
+        {
+            UpdatePositionIfInsideBoundaries(new(_position.X - _speed * deltaTime, _position.Y));
+        }
+
+        private void MoveDown(float deltaTime)
+        {
+            UpdatePositionIfInsideBoundaries(new(_position.X, _position.Y + _speed * deltaTime));
+        }
+
+        private void MoveUp(float deltaTime)
+        {
+            UpdatePositionIfInsideBoundaries(new(_position.X, _position.Y - _speed * deltaTime));
+        }
+
+        private void UpdatePositionIfInsideBoundaries(Vector2 newPosition)
+        {
+            bool isInsideBoundaries = _boundaries?.Contains(newPosition) ?? true;
+            if (isInsideBoundaries) _position = newPosition;
+        }
     }
 }

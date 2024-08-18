@@ -20,7 +20,11 @@ namespace RPG
         {
             _animation = animation;
             _animation.Position = _initialPosition;
-            _movement = new(_speed, _initialPosition);
+            _movement = new(
+                speed: _speed,
+                initialPosition: _initialPosition,
+                boundaries: new(225, 200, 1050, 1050)
+            );
             _isMoving = false;
         }
 
