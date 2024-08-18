@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace RPG
@@ -30,7 +29,7 @@ namespace RPG
                 case Origin.Right:
                     return new(_canvasSize.X + _enemyRadius, RandomY());
                 default:
-                    throw new RPGException("Never gonna happen!");
+                    throw new RpgException("Never gonna happen!");
             }
         }
 

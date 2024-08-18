@@ -6,12 +6,11 @@ namespace RPG
 {
     class EnemyController
     {
-        private const double _maxTimer = 2;
-
         private readonly EnemyFactory _factory;
         private readonly EnemyPositionGenerator _positionGenerator;
         private readonly List<Enemy> _enemies;
 
+        private double _maxTimer = 2;
         private double _timer;
         private Vector2 _playerPosition;
 
@@ -65,6 +64,8 @@ namespace RPG
                     _playerPosition
                 ));
                 _timer = _maxTimer;
+
+                if (_maxTimer > 0.5) _maxTimer -= 0.05;
             }
         }
 
