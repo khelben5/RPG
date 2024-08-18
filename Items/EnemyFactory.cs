@@ -15,7 +15,7 @@ namespace RPG
 
         public Enemy create(
             Vector2 initialPosition,
-            Direction direction
+            Vector2 initialTargetPosition
         )
         {
             ContentManager content;
@@ -24,7 +24,7 @@ namespace RPG
                 throw new MissingReferenceException("No reference to content manager.");
             return new(
                 initialPosition,
-                direction,
+                initialTargetPosition,
                 AnimationLoader.LoadEnemy(content, "skull")
             );
         }

@@ -6,32 +6,34 @@ namespace RPG
     class Enemy
     {
         private readonly int _speed = 150;
-        private readonly AnimatedMovingItem _animatedItem;
+        private readonly TargetMovement _movement;
+        private readonly Animation _animation;
 
         public Enemy(
             Vector2 initialPosition,
-            Direction direction,
-            SpriteAnimation animation
+            Vector2 initialTargetPosition,
+            SpriteAnimation sprite
         )
         {
-            _animatedItem = new(
-                animation: new(animation),
-                _speed,
-                initialPosition,
-                direction
-            );
-            // _animatedItem.StartAnimation();
-            _animatedItem.StartMovement();
+            _movement = new(_speed, initialPosition, initialTargetPosition);
+            _animation = new(sprite) { IsExecuting = true };
         }
 
         public void Update(GameTime gameTime)
         {
-            _animatedItem.Update(gameTime);
+            _movement.Update(gameTime);
+            _animation.Position = _movement.Position;
+            _animation.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _animatedItem.Draw(spriteBatch);
+            _animation.Draw(spriteBatch);
+        }
+
+        public void SetTargetPosition(Vector2 targetPosition)
+        {
+            _movement.SetTargetPosition(targetPosition);
         }
     }
 }

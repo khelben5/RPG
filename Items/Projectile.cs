@@ -8,7 +8,7 @@ namespace RPG
         private const int _speed = 1000;
 
         private readonly Texture2D _sprite;
-        private readonly MovingItem _movingItem;
+        private readonly DirectionMovement _movement;
 
         public Projectile(
             Texture2D sprite,
@@ -17,20 +17,19 @@ namespace RPG
         )
         {
             _sprite = sprite;
-            _movingItem = new(_speed, initialPosition, direction);
-            _movingItem.StartMovement();
+            _movement = new(_speed, initialPosition, direction);
         }
 
         public void Update(GameTime gameTime)
         {
-            _movingItem.Update(gameTime);
+            _movement.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 _sprite,
-                FixDrawingPosition(_movingItem.Position, _sprite),
+                FixDrawingPosition(_movement.Position, _sprite),
                 Color.White
             );
         }

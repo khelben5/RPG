@@ -7,16 +7,21 @@ namespace RPG
     class Player
     {
         private const int _speed = 300;
+
         private readonly Vector2 _initialPosition = new(500, 300);
+        private readonly Animation _animation;
+        private readonly DirectionMovement _movement;
+        private bool _isMoving;
 
-        private readonly AnimatedMovingItem _movingItem;
-
-        public Vector2 Position { get => _movingItem.Position; }
-        public Direction Direction { get => _movingItem.Direction; }
+        public Vector2 Position { get => _movement.Position; }
+        public Direction Direction { get => _movement.Direction; }
 
         public Player(Animation animation)
         {
-            _movingItem = new(animation, _speed, _initialPosition);
+            _animation = animation;
+            _animation.Position = _initialPosition;
+            _movement = new(_speed, _initialPosition);
+            _isMoving = false;
         }
 
         public void Update(GameTime gameTime)
@@ -24,22 +29,27 @@ namespace RPG
             Direction? direction = DetectDirection(Keyboard.GetState());
             if (direction == null)
             {
-                _movingItem.StopAnimation();
-                _movingItem.StopMovement();
+                _isMoving = false;
+                _animation.IsExecuting = false;
             }
             else
             {
-                _movingItem.Direction = (Direction)direction;
-                _movingItem.StartMovement();
-                _movingItem.StartAnimation();
+                _movement.Direction = (Direction)direction;
+                _animation.Direction = (Direction)direction;
+                _isMoving = true;
+                _animation.IsExecuting = true;
             }
 
-            _movingItem.Update(gameTime);
+            if (!_isMoving) return;
+
+            _movement.Update(gameTime);
+            _animation.Position = _movement.Position;
+            _animation.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _movingItem.Draw(spriteBatch);
+            _animation.Draw(spriteBatch);
         }
 
         private Direction? DetectDirection(KeyboardState keyboardState)

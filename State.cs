@@ -29,8 +29,8 @@ namespace RPG
             _camera = camera;
             _player = player;
             _projectileFactory = projectileFactory;
-            _enemies.Add(enemyFactory.create(_player.Position, Direction.Right));
-            _enemies.Add(enemyFactory.create(_player.Position, Direction.Left));
+            _enemies.Add(enemyFactory.create(new(10, 10), _player.Position));
+            _enemies.Add(enemyFactory.create(new(300, 300), _player.Position));
         }
 
         public void Update(GameTime gameTime)
@@ -81,6 +81,7 @@ namespace RPG
         {
             foreach (var enemy in _enemies)
             {
+                enemy.SetTargetPosition(_player.Position);
                 enemy.Update(gameTime);
             }
         }
