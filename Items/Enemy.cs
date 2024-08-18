@@ -9,6 +9,9 @@ namespace RPG
         private readonly TargetMovement _movement;
         private readonly Animation _animation;
 
+        public Vector2 Position => _movement.Position;
+        public float Radius => _animation.Size.X / 2;
+
         public Enemy(
             Vector2 initialPosition,
             Vector2 initialTargetPosition,

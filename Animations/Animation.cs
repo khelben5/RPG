@@ -11,6 +11,7 @@ namespace RPG
         private bool _isExecuting = false;
 
         public Direction Direction { get; set; }
+
         public bool IsExecuting
         {
             get => _isExecuting;
@@ -26,6 +27,8 @@ namespace RPG
             get => ActiveAnimation.Position;
             set => ActiveAnimation.Position = value;
         }
+
+        public Vector2 Size => ActiveAnimation.Size;
 
         public Animation(SpriteAnimation animation) : this(animation, animation, animation, animation)
         { }
@@ -59,6 +62,6 @@ namespace RPG
             ActiveAnimation.Draw(spriteBatch);
         }
 
-        private SpriteAnimation ActiveAnimation { get => _animations[Direction]; }
+        private SpriteAnimation ActiveAnimation => _animations[Direction];
     }
 }

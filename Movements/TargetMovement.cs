@@ -9,7 +9,7 @@ namespace RPG
         private Vector2 _position;
         private Vector2 _targetPosition;
 
-        public Vector2 Position { get => _position; }
+        public Vector2 Position => _position;
 
         public TargetMovement(
             int speed,

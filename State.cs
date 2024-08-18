@@ -17,7 +17,7 @@ namespace RPG
 
         private bool _isTriggerPulled = false;
 
-        public Camera Camera { get => _camera; }
+        public Camera Camera => _camera;
 
         public State(
             Camera camera,
@@ -35,6 +35,7 @@ namespace RPG
 
         public void Update(GameTime gameTime)
         {
+            DetectCollisions();
             _player.Update(gameTime);
             UpdateCamera(gameTime);
             DetectShot();
@@ -71,7 +72,7 @@ namespace RPG
 
         private void UpdateProjectiles(GameTime gameTime)
         {
-            foreach (var projectile in _projectiles)
+            foreach (Projectile projectile in _projectiles)
             {
                 projectile.Update(gameTime);
             }
@@ -79,16 +80,26 @@ namespace RPG
 
         private void UpdateEnemies(GameTime gameTime)
         {
-            foreach (var enemy in _enemies)
+            foreach (Enemy enemy in _enemies)
             {
                 enemy.SetTargetPosition(_player.Position);
                 enemy.Update(gameTime);
             }
         }
 
+        private void DetectCollisions()
+        {
+            List<Collision> collisions = CollisionDetector.DetectCollisions(_enemies, _projectiles);
+            foreach (Collision collision in collisions)
+            {
+                _enemies.Remove(collision.enemy);
+                _projectiles.Remove(collision.projectile);
+            }
+        }
+
         private void DrawProjectiles(SpriteBatch spriteBatch)
         {
-            foreach (var projectile in _projectiles)
+            foreach (Projectile projectile in _projectiles)
             {
                 projectile.Draw(spriteBatch);
             }
@@ -96,7 +107,7 @@ namespace RPG
 
         private void DrawEnemies(SpriteBatch spriteBatch)
         {
-            foreach (var enemy in _enemies)
+            foreach (Enemy enemy in _enemies)
             {
                 enemy.Draw(spriteBatch);
             }

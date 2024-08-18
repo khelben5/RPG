@@ -10,6 +10,9 @@ namespace RPG
         private readonly Texture2D _sprite;
         private readonly DirectionMovement _movement;
 
+        public Vector2 Position => _movement.Position;
+        public float Radius => _sprite.Width / 2;
+
         public Projectile(
             Texture2D sprite,
             Direction direction,

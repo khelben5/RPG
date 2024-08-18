@@ -13,8 +13,8 @@ namespace RPG
         private readonly DirectionMovement _movement;
         private bool _isMoving;
 
-        public Vector2 Position { get => _movement.Position; }
-        public Direction Direction { get => _movement.Direction; }
+        public Vector2 Position => _movement.Position;
+        public Direction Direction => _movement.Direction;
 
         public Player(Animation animation)
         {

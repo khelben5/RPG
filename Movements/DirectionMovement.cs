@@ -7,7 +7,7 @@ namespace RPG
         private readonly int _speed;
         private Vector2 _position;
 
-        public Vector2 Position { get => _position; }
+        public Vector2 Position => _position;
         public Direction Direction { get; set; }
 
         public DirectionMovement(

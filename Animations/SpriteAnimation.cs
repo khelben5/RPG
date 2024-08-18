@@ -13,9 +13,9 @@ namespace RPG
         private readonly Texture2D _texture;
         private readonly float _rotation = 0f;
         private readonly float _scale = 1f;
-        private Vector2 Size => _rectangles[_stopFrameIndex].Size.ToVector2();
 
         public Vector2 Position { get; set; }
+        public Vector2 Size => _rectangles[_stopFrameIndex].Size.ToVector2();
 
         public SpriteManager(Texture2D texture, int frames)
         {
