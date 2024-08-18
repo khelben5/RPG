@@ -21,7 +21,7 @@ namespace RPG
             ContentManager content;
             bool contentManagerAvailable = _contentManager.TryGetTarget(out content);
             if (!contentManagerAvailable)
-                throw new MissingReferenceException("No reference to content manager.");
+                throw new RPGException("No reference to content manager.");
             return new(
                 initialPosition,
                 initialTargetPosition,

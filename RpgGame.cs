@@ -7,7 +7,7 @@ namespace RPG;
 
 public class RpgGame : Game
 {
-    private GraphicsDeviceManager _graphics;
+    private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameSprites _sprites;
     private State _state;
@@ -32,7 +32,16 @@ public class RpgGame : Game
             camera: new(_graphics.GraphicsDevice),
             player: new(LoadPlayerAnimation()),
             projectileFactory: new(_sprites.Ball),
-            enemyFactory: new(Content)
+            enemyController: new(
+                factory: new(Content),
+                positionGenerator: new(
+                    canvasSize: new(
+                        _graphics.PreferredBackBufferWidth,
+                        _graphics.PreferredBackBufferHeight
+                    ),
+                    enemyRadius: _sprites.Skull.Bounds.Width / 2
+                )
+            )
         );
     }
 

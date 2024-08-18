@@ -13,7 +13,7 @@ namespace RPG
         private readonly Camera _camera;
         private readonly ProjectileFactory _projectileFactory;
         private readonly List<Projectile> _projectiles = new();
-        private readonly List<Enemy> _enemies = new();
+        private readonly EnemyController _enemyController;
 
         private bool _isTriggerPulled = false;
 
@@ -23,14 +23,13 @@ namespace RPG
             Camera camera,
             Player player,
             ProjectileFactory projectileFactory,
-            EnemyFactory enemyFactory
+            EnemyController enemyController
         )
         {
             _camera = camera;
             _player = player;
             _projectileFactory = projectileFactory;
-            _enemies.Add(enemyFactory.create(new(10, 10), _player.Position));
-            _enemies.Add(enemyFactory.create(new(300, 300), _player.Position));
+            _enemyController = enemyController;
         }
 
         public void Update(GameTime gameTime)
@@ -46,8 +45,17 @@ namespace RPG
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawProjectiles(spriteBatch);
-            DrawEnemies(spriteBatch);
+            _enemyController.Draw(spriteBatch);
             _player.Draw(spriteBatch);
+        }
+
+        private void DetectCollisions()
+        {
+            foreach (Collision collision in _enemyController.DetectCollisions(_projectiles))
+            {
+                _enemyController.KillEnemy(collision.enemy);
+                _projectiles.Remove(collision.projectile);
+            }
         }
 
         private void UpdateCamera(GameTime gameTime)
@@ -80,21 +88,8 @@ namespace RPG
 
         private void UpdateEnemies(GameTime gameTime)
         {
-            foreach (Enemy enemy in _enemies)
-            {
-                enemy.SetTargetPosition(_player.Position);
-                enemy.Update(gameTime);
-            }
-        }
-
-        private void DetectCollisions()
-        {
-            List<Collision> collisions = CollisionDetector.DetectCollisions(_enemies, _projectiles);
-            foreach (Collision collision in collisions)
-            {
-                _enemies.Remove(collision.enemy);
-                _projectiles.Remove(collision.projectile);
-            }
+            _enemyController.SetPlayerPosition(_player.Position);
+            _enemyController.Update(gameTime);
         }
 
         private void DrawProjectiles(SpriteBatch spriteBatch)
@@ -102,14 +97,6 @@ namespace RPG
             foreach (Projectile projectile in _projectiles)
             {
                 projectile.Draw(spriteBatch);
-            }
-        }
-
-        private void DrawEnemies(SpriteBatch spriteBatch)
-        {
-            foreach (Enemy enemy in _enemies)
-            {
-                enemy.Draw(spriteBatch);
             }
         }
     }
