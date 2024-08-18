@@ -9,38 +9,46 @@ namespace RPG
         private const int _speed = 300;
         private readonly Vector2 _initialPosition = new(500, 300);
 
-        private readonly AnimatedItem _animatedItem;
+        private readonly AnimatedMovingItem _movingItem;
 
-        public Vector2 Position { get => _animatedItem.Position; }
-        public Vector2 Size { get => _animatedItem.Size; }
-        public Direction Direction { get => _animatedItem.Direction; }
+        public Vector2 Position { get => _movingItem.Position; }
+        public Direction Direction { get => _movingItem.Direction; }
 
-        public Player(MovingAnimation animation)
+        public Player(Animation animation)
         {
-            _animatedItem = new(
-                animation: animation,
-                movingItem: new(_speed, _initialPosition)
-            );
+            _movingItem = new(animation, _speed, _initialPosition);
         }
 
         public void Update(GameTime gameTime)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Direction? direction = DetectDirection(Keyboard.GetState());
+            if (direction == null)
+            {
+                _movingItem.StopAnimation();
+                _movingItem.StopMovement();
+            }
+            else
+            {
+                _movingItem.Direction = (Direction)direction;
+                _movingItem.StartMovement();
+                _movingItem.StartAnimation();
+            }
 
-            if (IsKeyDown(Keys.Right)) _animatedItem.MoveRight(deltaTime);
-            else if (IsKeyDown(Keys.Left)) _animatedItem.MoveLeft(deltaTime);
-            else if (IsKeyDown(Keys.Down)) _animatedItem.MoveDown(deltaTime);
-            else if (IsKeyDown(Keys.Up)) _animatedItem.MoveUp(deltaTime);
-            else _animatedItem.Stop();
-
-            _animatedItem.Update(gameTime);
+            _movingItem.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _animatedItem.Draw(spriteBatch);
+            _movingItem.Draw(spriteBatch);
         }
 
-        private bool IsKeyDown(Keys key) => Keyboard.GetState().IsKeyDown(key);
+        private Direction? DetectDirection(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.Right)) return Direction.Right;
+            if (keyboardState.IsKeyDown(Keys.Left)) return Direction.Left;
+            if (keyboardState.IsKeyDown(Keys.Down)) return Direction.Down;
+            if (keyboardState.IsKeyDown(Keys.Up)) return Direction.Up;
+            return null;
+        }
     }
 }

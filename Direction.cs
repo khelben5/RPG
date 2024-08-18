@@ -5,6 +5,6 @@ namespace RPG
         Down,
         Up,
         Right,
-        Left
+        Left,
     }
 }

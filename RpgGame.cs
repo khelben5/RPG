@@ -30,8 +30,9 @@ public class RpgGame : Game
         _sprites = CreateGameSprites();
         _state = new(
             camera: new(_graphics.GraphicsDevice),
-            player: new(LoadDirectedAnimation()),
-            projectileSprite: _sprites.Ball
+            player: new(LoadPlayerAnimation()),
+            projectileFactory: new(_sprites.Ball),
+            enemyFactory: new(Content)
         );
     }
 
@@ -73,18 +74,12 @@ public class RpgGame : Game
         walkLeft: Content.Load<Texture2D>("Player/walkLeft")
     );
 
-    private MovingAnimation LoadDirectedAnimation() => new(
-        moveDown: LoadAnimation("Player/walkDown"),
-        moveUp: LoadAnimation("Player/walkUp"),
-        moveRight: LoadAnimation("Player/walkRight"),
-        moveLeft: LoadAnimation("Player/walkLeft")
+    private Animation LoadPlayerAnimation() => new(
+        moveDown: AnimationLoader.LoadPlayer(Content, "Player/walkDown"),
+        moveUp: AnimationLoader.LoadPlayer(Content, "Player/walkUp"),
+        moveRight: AnimationLoader.LoadPlayer(Content, "Player/walkRight"),
+        moveLeft: AnimationLoader.LoadPlayer(Content, "Player/walkLeft")
     );
-
-    private SpriteAnimation LoadAnimation(
-        string assetName,
-        int numberOfFrames = 4,
-        int framesPerSecond = 8
-    ) => new(Content.Load<Texture2D>(assetName), numberOfFrames, framesPerSecond);
 
     private void ExitIfRequired()
     {

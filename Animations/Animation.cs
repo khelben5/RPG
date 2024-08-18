@@ -4,16 +4,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RPG
 {
-    class MovingAnimation
+    class Animation
     {
         private readonly Dictionary<Direction, SpriteAnimation> _animations;
 
+        public Vector2 Position
+        {
+            get => ActiveAnimation.Position;
+            set => ActiveAnimation.Position = value;
+        }
         public Direction Direction { get; set; }
-        public Vector2 Size { get => ActiveAnimation.Size; }
+        public bool IsExecuting = false;
 
-        public bool IsRunning;
+        public Animation(
+            SpriteAnimation animation
+        ) : this(animation, animation, animation, animation)
+        { }
 
-        public MovingAnimation(
+        public Animation(
             SpriteAnimation moveDown,
             SpriteAnimation moveUp,
             SpriteAnimation moveRight,
@@ -29,10 +37,9 @@ namespace RPG
             };
         }
 
-        public void Update(GameTime gameTime, Vector2 position)
+        public void Update(GameTime gameTime)
         {
-            ActiveAnimation.Position = position - ActiveAnimation.Size / 2;
-            if (IsRunning) ActiveAnimation.Update(gameTime);
+            if (IsExecuting) ActiveAnimation.Update(gameTime);
             else ActiveAnimation.Stop();
         }
 

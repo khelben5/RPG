@@ -11,8 +11,9 @@ namespace RPG
     {
         private readonly Player _player;
         private readonly Camera _camera;
-        private readonly Texture2D _projectileSprite;
+        private readonly ProjectileFactory _projectileFactory;
         private readonly List<Projectile> _projectiles = new();
+        private readonly List<Enemy> _enemies = new();
 
         private bool _isTriggerPulled = false;
 
@@ -21,12 +22,15 @@ namespace RPG
         public State(
             Camera camera,
             Player player,
-            Texture2D projectileSprite
+            ProjectileFactory projectileFactory,
+            EnemyFactory enemyFactory
         )
         {
             _camera = camera;
             _player = player;
-            _projectileSprite = projectileSprite;
+            _projectileFactory = projectileFactory;
+            _enemies.Add(enemyFactory.create(_player.Position, Direction.Right));
+            _enemies.Add(enemyFactory.create(_player.Position, Direction.Left));
         }
 
         public void Update(GameTime gameTime)
@@ -35,11 +39,13 @@ namespace RPG
             UpdateCamera(gameTime);
             DetectShot();
             UpdateProjectiles(gameTime);
+            UpdateEnemies(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             DrawProjectiles(spriteBatch);
+            DrawEnemies(spriteBatch);
             _player.Draw(spriteBatch);
         }
 
@@ -54,11 +60,9 @@ namespace RPG
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && !_isTriggerPulled)
             {
                 _isTriggerPulled = true;
-                _projectiles.Add(new(
-                    sprite: _projectileSprite,
-                    direction: _player.Direction,
+                _projectiles.Add(_projectileFactory.create(
                     position: _player.Position,
-                    drawOffset: _player.Size / 2
+                    direction: _player.Direction
                 ));
             }
 
@@ -73,11 +77,27 @@ namespace RPG
             }
         }
 
+        private void UpdateEnemies(GameTime gameTime)
+        {
+            foreach (var enemy in _enemies)
+            {
+                enemy.Update(gameTime);
+            }
+        }
+
         private void DrawProjectiles(SpriteBatch spriteBatch)
         {
             foreach (var projectile in _projectiles)
             {
                 projectile.Draw(spriteBatch);
+            }
+        }
+
+        private void DrawEnemies(SpriteBatch spriteBatch)
+        {
+            foreach (var enemy in _enemies)
+            {
+                enemy.Draw(spriteBatch);
             }
         }
     }

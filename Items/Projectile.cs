@@ -9,50 +9,33 @@ namespace RPG
 
         private readonly Texture2D _sprite;
         private readonly MovingItem _movingItem;
-        private readonly Direction _direction;
-        private readonly Vector2 _drawOffset;
 
         public Projectile(
             Texture2D sprite,
             Direction direction,
-            Vector2 position,
-            Vector2 drawOffset
+            Vector2 initialPosition
         )
         {
             _sprite = sprite;
-            _direction = direction;
-            _movingItem = new(_speed, position);
-            _drawOffset = drawOffset;
+            _movingItem = new(_speed, initialPosition, direction);
+            _movingItem.StartMovement();
         }
 
         public void Update(GameTime gameTime)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            switch (_direction)
-            {
-                case Direction.Down:
-                    _movingItem.MoveDown(deltaTime);
-                    break;
-                case Direction.Up:
-                    _movingItem.MoveUp(deltaTime);
-                    break;
-                case Direction.Right:
-                    _movingItem.MoveRight(deltaTime);
-                    break;
-                case Direction.Left:
-                    _movingItem.MoveLeft(deltaTime);
-                    break;
-            }
+            _movingItem.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 _sprite,
-                _movingItem.Position - _drawOffset,
+                FixDrawingPosition(_movingItem.Position, _sprite),
                 Color.White
             );
         }
+
+        private Vector2 FixDrawingPosition(Vector2 position, Texture2D sprite) =>
+            position - new Vector2(sprite.Bounds.Width / 2, sprite.Bounds.Height / 2);
     }
 }
