@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace RPG;
 
@@ -45,6 +46,8 @@ public class RpgGame : Game
             )
         );
         Sounds.projectileSound = Content.Load<SoundEffect>("Sounds/blip");
+        Sounds.backgroundMusic = Content.Load<Song>("Sounds/nature");
+        MediaPlayer.Play(Sounds.backgroundMusic);
     }
 
     protected override void Update(GameTime gameTime)
