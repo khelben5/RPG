@@ -1,5 +1,6 @@
 ﻿using Comora;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -43,6 +44,7 @@ public class RpgGame : Game
                 )
             )
         );
+        Sounds.projectileSound = Content.Load<SoundEffect>("Sounds/blip");
     }
 
     protected override void Update(GameTime gameTime)

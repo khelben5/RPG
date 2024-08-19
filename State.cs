@@ -75,6 +75,7 @@ namespace RPG
                     position: _player.Position,
                     direction: _player.Direction
                 ));
+                Sounds.projectileSound.Play();
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.Space)) _isTriggerPulled = false;
